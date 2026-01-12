@@ -1,6 +1,11 @@
-import { createApp } from './app.js';
+import { createApp } from './app';
+import { cassandra } from './lib/cassandra';
+import { redis } from './lib/redis';
+
 const startServer = async () => {
   try {
+    await Promise.all([redis.connect(), cassandra.connect()]);
+
     const app = createApp();
 
     const PORT = parseInt(process.env.PORT!);
