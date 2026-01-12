@@ -1,4 +1,7 @@
-CREATE TABLE test (
+CREATE TABLE users (
     id text PRIMARY KEY,
-    title text
+    email text,
+    name text,
+    avatar text,
+    create_at timestamp
 );
