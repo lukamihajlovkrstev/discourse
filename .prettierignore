@@ -1,0 +1,13 @@
+# Ignore artifacts:
+dist
+build
+coverage
+.pnpm-store
+node_modules
+
+# Ignore system files:
+.DS_Store
+.env
+Dockerfile
+docker-compose.yaml
+pnpm-lock.yaml

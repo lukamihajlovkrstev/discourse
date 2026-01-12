@@ -1,0 +1,71 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile.dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./packages/frontend/src:/app/packages/frontend/src
+      - ./packages/shared:/app/packages/shared
+    environment:
+      - VITE_API_URL=http://localhost:4000
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: packages/backend/Dockerfile.dev
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./packages/backend/src:/app/packages/backend/src
+      - ./packages/shared/index.ts:/app/packages/shared/index.ts
+      - /app/node_modules
+      - /app/packages/backend/node_modules
+      - /app/packages/shared/node_modules
+    environment:
+      - CASSANDRA_CONTACT_POINTS=cassandra
+      - CASSANDRA_LOCAL_DATA_CENTER=datacenter1
+      - CASSANDRA_KEYSPACE=discourse
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - cassandra
+      - redis
+    env_file:
+      - .env
+    networks:
+      - app-network
+
+  cassandra:
+    image: cassandra:5.0
+    ports:
+      - "9042:9042"
+    environment:
+      - CASSANDRA_CLUSTER_NAME=DiscourseCluster
+      - CASSANDRA_DC=datacenter1
+      - CASSANDRA_ENDPOINT_SNITCH=GossipingPropertyFileSnitch
+    volumes:
+      - cassandra-data:/var/lib/cassandra
+    networks:
+      - app-network
+
+  redis:
+    image: redis:8.4-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  cassandra-data:
+  redis-data:

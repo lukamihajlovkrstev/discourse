@@ -1,0 +1,12 @@
+{
+  "name": "discourse",
+  "packageManager": "pnpm@10.27.0",
+  "private": true,
+  "scripts": {
+    "dev": "docker compose up",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "prettier": "^3.7.4"
+  }
+}
