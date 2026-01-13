@@ -61,4 +61,15 @@ router.get('/me', protect, async (req, res, next) => {
   }
 });
 
+router.get('/logout', protect, async (req, res, next) => {
+  try {
+    await sessionService.destroy(req.user!.id!);
+    res.clearCookie('session');
+    res.clearCookie('hint');
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
