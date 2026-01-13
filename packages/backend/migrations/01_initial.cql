@@ -1,7 +1,8 @@
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id text PRIMARY KEY,
     email text,
     name text,
-    avatar text,
-    create_at timestamp
+    picture text,
+    created_at timestamp,
+    updated_at timestamp
 );

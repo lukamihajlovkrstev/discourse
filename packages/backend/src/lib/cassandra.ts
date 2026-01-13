@@ -47,7 +47,6 @@ class CassandraDatabase {
 
   private async runMigrations(): Promise<void> {
     const migrationsDir = path.resolve(import.meta.dirname, '../../migrations');
-    console.log(migrationsDir);
 
     if (!fs.existsSync(migrationsDir)) {
       return;
