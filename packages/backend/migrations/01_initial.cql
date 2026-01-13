@@ -1,4 +1,8 @@
-CREATE TABLE test (
+CREATE TABLE IF NOT EXISTS users (
     id text PRIMARY KEY,
-    title text
+    email text,
+    name text,
+    picture text,
+    created_at timestamp,
+    updated_at timestamp
 );
