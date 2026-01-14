@@ -1,11 +1,8 @@
 import { Router } from 'express';
 import { protect } from '../middleware/auth.middleware';
 import { channelService } from '../services/channel.service';
-import {
-  channelIdParamSchema,
-  createChannelSchema,
-  updateChannelSchema,
-} from '../types/channel.types';
+import { channelIdParamSchema } from '../types/channel.types';
+import { createChannelSchema, updateChannelSchema } from '@discourse/shared';
 
 const router = Router();
 

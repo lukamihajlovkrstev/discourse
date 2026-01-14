@@ -1,3 +1,17 @@
+import { z } from 'zod';
+
+export const createChannelSchema = z.object({
+  title: z.string().min(1, 'Title is required').trim(),
+});
+
+export type CreateChannelInput = z.infer<typeof createChannelSchema>;
+
+export const updateChannelSchema = z.object({
+  title: z.string().min(1, 'Title is required').trim(),
+});
+
+export type UpdateChannelInput = z.infer<typeof updateChannelSchema>;
+
 export interface User {
   id: string;
   email: string;

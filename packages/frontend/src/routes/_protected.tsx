@@ -5,7 +5,7 @@ import {
   useNavigate,
 } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
-import { sessionQuery } from '@/queries/auth';
+import { getUser } from '@/queries/auth';
 import Cookies from 'js-cookie';
 import { useEffect } from 'react';
 
@@ -25,7 +25,7 @@ function ProtectedComponent() {
 
   const { isLoading, isError, data } = useQuery({
     queryKey: ['auth', 'session'],
-    queryFn: sessionQuery,
+    queryFn: getUser,
     staleTime: 5 * 60 * 1000,
     retry: false,
   });
