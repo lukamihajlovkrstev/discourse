@@ -12,6 +12,7 @@
   "dependencies": {
     "@discourse/shared": "workspace:*",
     "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-router": "^1.149.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.562.0",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@tanstack/router-plugin": "^1.149.3",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
