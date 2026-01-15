@@ -1,4 +1,4 @@
-import { Users } from 'lucide-react';
+import { UserPlus2, Users } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -56,11 +56,25 @@ export function SidebarRight() {
 
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon-sm" className="mr-2">
-          <Users className="h-5 w-5" />
+      <div className="flex gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={async () => {
+            await navigator.clipboard.writeText(
+              `${import.meta.env.VITE_API_URL}/api/channels/join/${channel}`,
+            );
+          }}
+        >
+          <UserPlus2 />
+          Invite
         </Button>
-      </SheetTrigger>
+        <SheetTrigger asChild>
+          <Button variant="ghost" size="icon-sm" className="mr-2">
+            <Users className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+      </div>
       <SheetContent side="right">
         <SheetHeader>
           <SheetTitle>Members</SheetTitle>
@@ -77,7 +91,7 @@ export function SidebarRight() {
                     className="flex gap-2 items-center min-w-0"
                     key={member.user}
                   >
-                    <Avatar className="h-8 w-8 rounded-lg">
+                    <Avatar className="h-8 w-8 rounded-lg overflow-hidden">
                       <AvatarImage
                         src={member.picture as string | undefined}
                         alt={member.name}
@@ -91,7 +105,7 @@ export function SidebarRight() {
                         {member.name}
                       </span>
                       <span className="truncate text-xs opacity-70">
-                        arrianaire@gmail.com
+                        {member.email}
                       </span>
                     </div>
                   </div>
@@ -121,7 +135,7 @@ export function SidebarRight() {
                   className="flex gap-2 items-center min-w-0"
                   key={member.user}
                 >
-                  <Avatar className="h-8 w-8 rounded-lg">
+                  <Avatar className="h-8 w-8 rounded-lg overflow-hidden">
                     <AvatarImage
                       src={member.picture as string | undefined}
                       alt={member.name}
@@ -133,7 +147,7 @@ export function SidebarRight() {
                   <div className="grid flex-1 text-left text-sm leading-tight truncate">
                     <span className="truncate font-medium">{member.name}</span>
                     <span className="truncate text-xs opacity-70">
-                      arrianaire@gmail.com
+                      {member.email}
                     </span>
                   </div>
                 </div>

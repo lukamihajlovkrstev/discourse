@@ -32,6 +32,7 @@ export interface Member {
   user: string;
   name: string;
   picture: string | null;
+  email: string;
   joined_at: Date;
   is_owner: boolean;
   online: boolean;

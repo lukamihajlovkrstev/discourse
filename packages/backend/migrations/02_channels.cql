@@ -12,7 +12,19 @@ CREATE TABLE IF NOT EXISTS users_by_channel (
     joined_at timestamp,
     user text,
     name text,
+    email text,
     picture text,
     is_owner boolean,
     PRIMARY KEY (channel, joined_at, user)
 ) WITH CLUSTERING ORDER BY (joined_at DESC, user ASC);
+
+CREATE TABLE IF NOT EXISTS channels (
+    channel text,
+    user text,
+    title text,
+    name text,
+    picture text,
+    joined_at timestamp,
+    is_owner boolean,
+    PRIMARY KEY (channel, user)
+);
