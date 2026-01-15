@@ -1,11 +1,13 @@
 import { Router } from 'express';
 import { protect } from '../middleware/auth.middleware';
 import { channelService } from '../services/channel.service';
+import { channelIdParamSchema } from '../types/channel.types';
 import {
-  channelIdParamSchema,
   createChannelSchema,
+  messagesQuerySchema,
   updateChannelSchema,
-} from '../types/channel.types';
+} from '@discourse/shared';
+import { messageService } from '../services/message.service';
 
 const router = Router();
 
@@ -18,6 +20,7 @@ router.post('/', protect, async (req, res, next) => {
       req.user!.name!,
       req.user!.picture || null,
       title,
+      req.user!.email,
     );
 
     res.status(201).json(channel);
@@ -34,6 +37,16 @@ router.put('/:id', protect, async (req, res, next) => {
     await channelService.rename(id, title, req.user!.id!);
 
     res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/join/:id', protect, async (req, res, next) => {
+  try {
+    const { id } = channelIdParamSchema.parse(req.params);
+    await channelService.join(id, req.user!.id!);
+    res.redirect(`${process.env.FRONTEND!}/channels/${id}`);
   } catch (error) {
     next(error);
   }
@@ -63,6 +76,17 @@ router.delete('/:id', protect, async (req, res, next) => {
     const { id } = channelIdParamSchema.parse(req.params);
     await channelService.delete(id, req.user!.id!);
     res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/:id/messages', protect, async (req, res, next) => {
+  try {
+    const { id } = channelIdParamSchema.parse(req.params);
+    const { limit, cursor } = messagesQuerySchema.parse(req.query);
+    const result = await messageService.getMessages(id, limit, cursor);
+    res.json(result);
   } catch (error) {
     next(error);
   }

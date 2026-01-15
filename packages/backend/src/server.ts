@@ -1,10 +1,14 @@
 import { createApp } from './app';
 import { cassandra } from './lib/cassandra';
-import { redis } from './lib/redis';
+import { consumer, redis } from './lib/redis';
 
 const startServer = async () => {
   try {
-    await Promise.all([redis.connect(), cassandra.connect()]);
+    await Promise.all([
+      consumer.connect(),
+      redis.connect(),
+      cassandra.connect(),
+    ]);
 
     const app = createApp();
 

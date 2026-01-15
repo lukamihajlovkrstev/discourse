@@ -2,6 +2,9 @@ import express from 'express';
 import router from './routes';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { createServer } from 'http';
+import { setupSockets } from './routes/sockets.routes';
+import { realtimeService } from './services/realtime.service';
 
 export function createApp() {
   const app = express();
@@ -20,5 +23,9 @@ export function createApp() {
 
   app.use('/api', router);
 
-  return app;
+  const server = createServer(app);
+  const io = setupSockets(server);
+  realtimeService.consumer(io);
+
+  return server;
 }

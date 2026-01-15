@@ -10,4 +10,11 @@ declare global {
   }
 }
 
+declare module 'http' {
+  interface IncomingMessage {
+    user?: User | null;
+    session?: Session | null;
+  }
+}
+
 export {};

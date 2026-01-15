@@ -5,7 +5,7 @@ import {
   useNavigate,
 } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
-import { sessionQuery } from '@/queries/auth';
+import { getUser } from '@/queries/auth';
 import Cookies from 'js-cookie';
 import { useEffect } from 'react';
 
@@ -13,7 +13,7 @@ export const Route = createFileRoute('/_guest')({
   beforeLoad: () => {
     if (Cookies.get('hint') === 'true') {
       throw redirect({
-        to: '/chats',
+        to: '/channels',
       });
     }
   },
@@ -26,7 +26,7 @@ function GuestComponent() {
 
   const { data, isLoading, isSuccess } = useQuery({
     queryKey: ['auth', 'session'],
-    queryFn: sessionQuery,
+    queryFn: getUser,
     staleTime: 5 * 60 * 1000,
     retry: false,
     enabled: hasHint,
@@ -34,7 +34,7 @@ function GuestComponent() {
 
   useEffect(() => {
     if (!isLoading && isSuccess && data) {
-      navigate({ to: '/chats', replace: true });
+      navigate({ to: '/channels', replace: true });
     }
   }, [isLoading, isSuccess, data, navigate]);
 
