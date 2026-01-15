@@ -1,10 +1,15 @@
 import { Channel, Member } from '@discourse/shared';
 import { cassandra } from '../lib/cassandra';
 import { nanoid } from 'nanoid';
+import { redis } from '../lib/redis';
 
 export class ChannelService {
-  private get client() {
+  private get cassandra() {
     return cassandra.get();
+  }
+
+  private get redis() {
+    return redis.get();
   }
 
   async create(
@@ -33,7 +38,7 @@ export class ChannelService {
       },
     ];
 
-    await this.client.batch(queries, { prepare: true });
+    await this.cassandra.batch(queries, { prepare: true });
 
     return {
       channel: channel,
@@ -44,7 +49,7 @@ export class ChannelService {
   }
 
   async rename(channel: string, title: string, owner: string): Promise<void> {
-    const result = await this.client.execute(
+    const result = await this.cassandra.execute(
       'SELECT user, joined_at, is_owner FROM users_by_channel WHERE channel = ?',
       [channel],
       { prepare: true },
@@ -66,11 +71,11 @@ export class ChannelService {
       params: [title, row.user, row.joined_at, channel],
     }));
 
-    await this.client.batch(queries, { prepare: true });
+    await this.cassandra.batch(queries, { prepare: true });
   }
 
   async get(user: string): Promise<Channel[]> {
-    const result = await this.client.execute(
+    const result = await this.cassandra.execute(
       `
       SELECT channel, title, joined_at, is_owner
       FROM channels_by_user
@@ -98,7 +103,7 @@ export class ChannelService {
       throw new Error('User is not authorized to view this channel');
     }
 
-    const result = await this.client.execute(
+    const result = await this.cassandra.execute(
       `
       SELECT user, name, picture, joined_at, is_owner
       FROM users_by_channel
@@ -110,17 +115,22 @@ export class ChannelService {
       },
     );
 
+    const onlineUsers: string[] = await this.redis.sMembers(
+      `online_users:channel:${channel}`,
+    );
+
     return result.rows.map((row) => ({
       user: row.user,
       name: row.name,
       picture: row.picture,
       joined_at: row.joined_at,
       is_owner: row.is_owner,
+      online: onlineUsers.includes(row.user),
     }));
   }
 
   async delete(channel: string, owner: string): Promise<void> {
-    const result = await this.client.execute(
+    const result = await this.cassandra.execute(
       'SELECT user, joined_at, is_owner FROM users_by_channel WHERE channel = ?',
       [channel],
       { prepare: true },
@@ -151,7 +161,7 @@ export class ChannelService {
       params: [channel],
     });
 
-    await this.client.batch(queries, { prepare: true });
+    await this.cassandra.batch(queries, { prepare: true });
   }
 }
 

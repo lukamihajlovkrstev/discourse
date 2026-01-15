@@ -26,6 +26,7 @@ services:
       - /app/packages/backend/node_modules
       - /app/packages/shared/node_modules
     environment:
+      - SOCKET_ID=chat-backend-1
       - CASSANDRA_CONTACT_POINTS=cassandra
       - CASSANDRA_LOCAL_DATA_CENTER=datacenter1
       - CASSANDRA_KEYSPACE=discourse

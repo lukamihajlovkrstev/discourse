@@ -47,3 +47,4 @@ class RedisDatabase {
 }
 
 export const redis = new RedisDatabase();
+export const consumer = new RedisDatabase();

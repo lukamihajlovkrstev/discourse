@@ -34,4 +34,25 @@ export interface Member {
   picture: string | null;
   joined_at: Date;
   is_owner: boolean;
+  online: boolean;
 }
+
+export interface WebSocketMessage<T = unknown> {
+  type: string;
+  payload: T;
+}
+
+export type WebSocketMessages = { type: 'status'; payload: Status };
+
+export interface Status {
+  user: string;
+  online: boolean;
+}
+
+export interface WebSocketEvents {
+  status: Status;
+}
+
+export type WebSocketEventType = keyof WebSocketEvents;
+export type WebSocketEventPayload<T extends WebSocketEventType> =
+  WebSocketEvents[T];
