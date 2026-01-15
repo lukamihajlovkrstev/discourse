@@ -8,6 +8,7 @@ import {
 import { consumer, redis } from '../lib/redis';
 import { Server } from 'socket.io';
 import { channelService } from './channel.service';
+import { messageService } from './message.service';
 
 const STREAM = 'events';
 const CONSUMER = 'main';
@@ -103,6 +104,12 @@ export class RealtimeService {
                   }
                 }
                 break;
+              case 'message':
+                messageService.create(data.payload);
+                io.to(`channel:${data.payload.channel}`).emit(
+                  data.type,
+                  data.payload,
+                );
             }
 
             await this.consumerClient.xAck(STREAM, GROUP, message.id);

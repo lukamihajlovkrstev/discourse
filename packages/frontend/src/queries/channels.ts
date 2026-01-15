@@ -3,6 +3,7 @@ import type {
   Channel,
   CreateChannelInput,
   Member,
+  PaginatedMessages,
   UpdateChannelInput,
 } from '@discourse/shared';
 
@@ -32,4 +33,20 @@ export async function updateChannel({
   data: UpdateChannelInput;
 }): Promise<Channel> {
   return api(`/channels/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+}
+
+export async function getMessages(
+  channel: string,
+  cursor?: string,
+  limit: number = 10,
+): Promise<PaginatedMessages> {
+  const params = new URLSearchParams({
+    limit: limit.toString(),
+  });
+
+  if (cursor) {
+    params.append('cursor', cursor);
+  }
+
+  return api(`/channels/${channel}/messages?${params.toString()}`);
 }

@@ -5,6 +5,6 @@ export async function getUser(): Promise<User> {
   return api('/auth/me');
 }
 
-export async function logoutMutation() {
+export async function logOut() {
   return api('/auth/logout', { method: 'GET' });
 }

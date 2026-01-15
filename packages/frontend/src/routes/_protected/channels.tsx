@@ -30,20 +30,23 @@ function RouteComponent() {
       <SidebarProvider>
         <SidebarLeft channels={channels} />
         <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 border-b">
-            <div className="flex flex-1 items-center gap-2 px-3">
-              <SidebarTrigger />
-              <Separator
-                orientation="vertical"
-                className="mr-2 data-[orientation=vertical]:h-4"
-              />
-              <div className="text-foreground font-normal">
-                {current && current[0]?.title}
+          <div className="flex flex-col h-svh overflow-hidden">
+            <div className="flex flex-col h-full w-full">
+              <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+                <div className="flex flex-1 items-center gap-2">
+                  <SidebarTrigger />
+                  <Separator orientation="vertical" className="mr-2 h-4" />
+                  <div className="text-foreground font-normal">
+                    {current && current[0]?.title}
+                  </div>
+                </div>
+                <SidebarRight />
+              </header>
+              <div className="flex-1 min-h-0 overflow-hidden">
+                <Outlet />
               </div>
             </div>
-            <SidebarRight />
-          </header>
-          <Outlet />
+          </div>
         </SidebarInset>
       </SidebarProvider>
     </SocketProvider>

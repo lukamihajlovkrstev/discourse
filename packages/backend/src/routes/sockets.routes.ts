@@ -1,10 +1,11 @@
 import { Server, Socket } from 'socket.io';
-import { Channel, User } from '@discourse/shared';
+import { Channel, messageCreateSchema, User } from '@discourse/shared';
 import { realtimeService } from '../services/realtime.service';
 import { SessionService } from '../services/session.service';
 import { UserService } from '../services/user.service';
 import { parse } from 'cookie';
 import { channelService } from '../services/channel.service';
+import { ZodError } from 'zod';
 
 interface ConnectionData {
   user: User;
@@ -84,6 +85,45 @@ export function setupSockets(server: any) {
       socket.disconnect(true);
       return;
     }
+
+    socket.on('message', async (payload: any, callback) => {
+      try {
+        const validated = messageCreateSchema.parse(payload);
+        const { channel, content } = validated;
+
+        const connection = connections.get(socket.id);
+        const isMember = connection?.channels.some(
+          (c) => c.channel === channel,
+        );
+
+        if (!isMember) {
+          return callback?.({
+            status: 'error',
+            message: 'Unauthorized to post in this channel',
+          });
+        }
+
+        const now = new Date().toISOString();
+
+        await realtimeService.publish('message', {
+          user: socket.user.id,
+          name: socket.user.name,
+          picture: socket.user.picture ?? '',
+          content: content,
+          channel: channel,
+          message: now,
+        });
+
+        callback?.({ status: 'ok' });
+      } catch (error) {
+        if (error instanceof ZodError) {
+          callback?.({ status: 'error', errors: error.issues });
+        } else {
+          console.error('Message error:', error);
+          callback?.({ status: 'error', message: 'Internal server error' });
+        }
+      }
+    });
 
     socket.on('disconnect', async (reason) => {
       console.log(`Socket ${socket.id} disconnected: ${reason}`);

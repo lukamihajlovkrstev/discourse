@@ -15,7 +15,7 @@ import {
 import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { getUser } from '@/queries/auth';
+import { getUser, logOut } from '@/queries/auth';
 import { getInitials } from '@/lib/utils';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { useMemo, useState } from 'react';
@@ -92,6 +92,14 @@ export function SidebarLeft({ channels }: { channels?: Channel[] }) {
     }
   };
 
+  const logout = useMutation({
+    mutationFn: logOut,
+    onSettled: async () => {
+      queryClient.clear();
+      navigate({ to: '/login', replace: true });
+    },
+  });
+
   return (
     <Sidebar className="border-r-0">
       <Dialog open={open} onOpenChange={(val) => !isPending && setOpen(val)}>
@@ -99,10 +107,10 @@ export function SidebarLeft({ channels }: { channels?: Channel[] }) {
           <form onSubmit={submit}>
             <DialogHeader>
               <DialogTitle>
-                {target ? 'Rename collection' : 'Name your collection'}
+                {target ? 'Rename channel' : 'Name your channel'}
               </DialogTitle>
               <DialogDescription>
-                This title will be used to organize and group all responses.
+                A space for your team to send messages and stay connected.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -233,7 +241,11 @@ export function SidebarLeft({ channels }: { channels?: Channel[] }) {
               <span className="truncate text-xs opacity-70">{user?.email}</span>
             </div>
           </div>
-          <Button size="icon-sm" variant="outline">
+          <Button
+            size="icon-sm"
+            variant="outline"
+            onClick={() => logout.mutate()}
+          >
             <LogOut className="size-4" />
           </Button>
         </div>

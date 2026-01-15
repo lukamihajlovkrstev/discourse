@@ -131,24 +131,38 @@ export function SidebarRight() {
             </div>
             <div className="flex flex-col gap-4">
               {offline?.map((member) => (
-                <div
-                  className="flex gap-2 items-center min-w-0"
-                  key={member.user}
-                >
-                  <Avatar className="h-8 w-8 rounded-lg overflow-hidden">
-                    <AvatarImage
-                      src={member.picture as string | undefined}
-                      alt={member.name}
-                    />
-                    <AvatarFallback className="rounded-lg">
-                      {getInitials(member.name)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight truncate">
-                    <span className="truncate font-medium">{member.name}</span>
-                    <span className="truncate text-xs opacity-70">
-                      {member.email}
-                    </span>
+                <div className="flex align-middle justify-between">
+                  <div
+                    className="flex gap-2 items-center min-w-0"
+                    key={member.user}
+                  >
+                    <Avatar className="h-8 w-8 rounded-lg overflow-hidden">
+                      <AvatarImage
+                        src={member.picture as string | undefined}
+                        alt={member.name}
+                      />
+                      <AvatarFallback className="rounded-lg">
+                        {getInitials(member.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight truncate">
+                      <span className="truncate font-medium">
+                        {member.name}
+                      </span>
+                      <span className="truncate text-xs opacity-70">
+                        {member.email}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex align-middle">
+                    {member.is_owner && (
+                      <img
+                        src="/star.svg"
+                        alt="owner"
+                        width="16px"
+                        height="16px"
+                      />
+                    )}
                   </div>
                 </div>
               ))}
